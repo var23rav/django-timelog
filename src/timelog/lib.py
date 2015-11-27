@@ -130,3 +130,23 @@ def analyze_log_file(logfile, pattern, reverse_paths=True, progress=True):
         pbar.finish()
     
     return data
+
+def generate_csv_file(data):
+    print '-- Coder: var23 --'
+    "Clearing the content of file if exist"
+    import csv
+    csv_file = 'timelog.csv'
+    with open(csv_file, 'w') as myfile:
+        wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+        wr.writerow(["view", "method", "status", "count", "minimum", "maximum", "mean", "stdev"])
+    for item in data:
+        mean = round(sum(data[item]['times'])/data[item]['count'], 3)
+
+        sdsq = sum([(i - mean) ** 2 for i in data[item]['times']])
+        try:
+            stdev = '%.2f' % ((sdsq / (len(data[item]['times']) - 1)) ** .5)
+        except ZeroDivisionError:
+            stdev = '0.00'
+        with open(csv_file, 'ab') as myfile:
+            wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+            wr.writerow([data[item]['view'], data[item]['method'], data[item]['status'], data[item]['count'], data[item]['minimum'], data[item]['maximum'], '%.3f' % mean, stdev])

@@ -36,4 +36,6 @@ class Command(BaseCommand):
             print "File not found"
             exit(2)
 
+        generate_csv_file(data)
+
         print generate_table_from(data)
